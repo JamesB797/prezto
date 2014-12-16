@@ -1,4 +1,3 @@
-#!/usr/bin/zsh
 #
 # Executes commands at the start of an interactive session.
 #
@@ -13,12 +12,18 @@ fi
 
 # Customize to your needs...
 alias zshdir='cd ~/.zprezto/runcoms'
-function zshfiles-update {
+
+# Should probably investigate why I can't use the 'function'
+# syntax for this.
+e () {
+    nohup emacsclient --alternate-editor="emacs" "$@" > /dev/null 2>&1 &
+}
+
+function zupdate {
     setopt EXTENDED_GLOB
     for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
         rm -f "${ZDOTDIR:-$HOME}/.${rcfile:t}"
         ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
     done
+    source ~/.zprezto/runcoms/zshrc
 }
-
-alias alias-test='echo success'

@@ -19,6 +19,7 @@ e () {
     nohup emacsclient --alternate-editor="emacs" "$@" > /dev/null 2>&1 &
 }
 
+alias msysupdate='pacman --needed -S bash pacman msys2-runtime'
 function zupdate {
     setopt EXTENDED_GLOB
     for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do

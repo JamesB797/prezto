@@ -12,12 +12,15 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-alias zshdir='cd ~/.zprezto/runcoms'
+
+# zsh customization
+alias zc='cd ~/.zprezto/runcoms'
 
 if [[ `uname` =~ MSYS_NT ]]; then
-    alias downloads='cd f:/Media/Downloads'
+    alias dl='cd f:/Media/Downloads'
+    alias dr='cd f:/Media/Dropbox'
 else
-    alias downloads='cd ~/Downloads'
+    alias dl='cd ~/Downloads'
 fi
 
 # Should probably investigate why I can't use the 'function'

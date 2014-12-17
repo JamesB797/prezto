@@ -1,3 +1,4 @@
+#!/usr/bin/zsh
 #
 # Executes commands at the start of an interactive session.
 #
@@ -12,6 +13,12 @@ fi
 
 # Customize to your needs...
 alias zshdir='cd ~/.zprezto/runcoms'
+
+if [[ `uname` =~ MSYS_NT ]]; then
+    alias downloads='cd f:/Media/Downloads'
+else
+    alias downloads='cd ~/Downloads'
+fi
 
 # Should probably investigate why I can't use the 'function'
 # syntax for this.

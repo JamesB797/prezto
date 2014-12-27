@@ -19,15 +19,13 @@ alias zc='cd ~/.zprezto/runcoms'
 if [[ `uname` =~ MSYS_NT ]]; then
     alias dl='cd f:/Media/Downloads'
     alias dr='cd f:/Media/Dropbox'
+    alias ex='explorer .'
 else
     alias dl='cd ~/Downloads'
 fi
 
 # Should probably investigate why I can't use the 'function'
 # syntax for this.
-e () {
-    nohup emacsclient --alternate-editor="emacs" "$@" > /dev/null 2>&1 &
-}
 
 alias msysupdate='pacman --needed -S bash pacman msys2-runtime'
 function zupdate {

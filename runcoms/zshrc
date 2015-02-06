@@ -13,7 +13,11 @@ fi
 
 # Customize to your needs...
 
-# zsh customization
+# Ensure that the editor is set properly
+export VISUAL=emacsclient
+export EDITOR=emacsclient
+
+# zsh customization dir
 alias zc='cd ~/.zprezto/runcoms'
 
 if [[ `uname` =~ MSYS_NT ]]; then

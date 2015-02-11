@@ -28,6 +28,7 @@ if [[ `uname` =~ MSYS_NT ]]; then
         alias ga='cd c:/Repos/Glass\ App'
         alias dl='cd c:/Users/Student/Downloads'
         alias dr='cd c:/Users/Student/Dropbox'
+        alias rp='cd c:/Repos/Glass\ App'
     else
         alias dl='cd f:/Media/Downloads'
         alias dr='cd f:/Media/Dropbox'

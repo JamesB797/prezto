@@ -21,9 +21,18 @@ export EDITOR=emacsclient
 alias zc='cd ~/.zprezto/runcoms'
 
 if [[ `uname` =~ MSYS_NT ]]; then
-    alias dl='cd f:/Media/Downloads'
-    alias dr='cd f:/Media/Dropbox'
     alias ex='explorer .'
+
+    if [[ `whoami` =~ student ]]; then
+        alias pl='cd c:/Repos/portal/portal'
+        alias ga='cd c:/Repos/Glass\ App'
+        alias dl='cd c:/Users/Student/Downloads'
+        alias dr='cd c:/Users/Student/Dropbox'
+    else
+        alias dl='cd f:/Media/Downloads'
+        alias dr='cd f:/Media/Dropbox'
+    fi
+
 else
     alias dl='cd ~/Downloads'
 fi

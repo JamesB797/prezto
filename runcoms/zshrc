@@ -29,6 +29,8 @@ if [[ `uname` =~ MSYS_NT ]]; then
         alias dl='cd c:/Users/Student/Downloads'
         alias dr='cd c:/Users/Student/Dropbox'
         alias rp='cd c:/Repos'
+
+        alias prtl='ssh jbrown@50.10.123.195'
     else
         alias dl='cd f:/Media/Downloads'
         alias dr='cd f:/Media/Dropbox'

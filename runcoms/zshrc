@@ -12,14 +12,44 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+##############################
+# Customize to your needs... #
+##############################
 
-# Ensure that the editor is set properly
-export VISUAL=emacsclient
-export EDITOR=emacsclient
+#####################################
+# Read zsh configuration from couchdb
 
-# zsh customization dir
-alias zc='cd ~/.zprezto/runcoms'
+checkNotFound () {
+    [[ $(echo $* | jq .error) =~ not_found ]]
+}
+
+# config database location
+zc=http://127.0.0.1:5984/zshconfig
+
+# default aliases, configure others in futon
+read -d '' alias_doc <<EOF
+{"aliases": {"zc": "cd ~/zprezto/runcoms",
+             "ec": "cd ~/.emacs.d"}}
+EOF
+
+# Ensure database is created
+checkNotFound $(curl -sS $zc) && curl -X PUT $zc
+
+# Ensure aliases document is created
+aliasdoc=$(curl -sS $zc/aliases)
+checkNotFound $aliasdoc && aliasdoc=$(curl -sS -X PUT $zc/aliases -d $alias_doc)
+
+std_aliases=$(echo "$aliasdoc" | jq '.aliases')
+aliaskeys=$(echo "$std_aliases" | jq 'keys' | jq '.[]')
+
+echo "$aliaskeys" | while read -r key
+do
+    key=$(echo $key | tr -d '[:space:]"')
+    value=$(echo $std_aliases | jq .$key | tr -d "\'\"\n\r")
+    alias $key=$value
+done
+
+
 
 if [[ `uname` =~ MSYS_NT ]]; then
     alias ex='explorer .'
@@ -31,7 +61,9 @@ if [[ `uname` =~ MSYS_NT ]]; then
         alias dr='cd c:/Users/Student/Dropbox'
         alias rp='cd c:/Repos'
 
-        alias prtl='ssh jbrown@50.10.123.195'
+        function pcp {
+            scp $* 'host'
+        }
     else
         alias dl='cd f:/Media/Downloads'
         alias dr='cd f:/Media/Dropbox'
@@ -40,6 +72,11 @@ if [[ `uname` =~ MSYS_NT ]]; then
 else
     alias dl='cd ~/Downloads'
 fi
+
+########################################
+# Ensure that the editor is set properly
+export VISUAL=emacsclient
+export EDITOR=emacsclient
 
 # Should probably investigate why I can't use the 'function'
 # syntax for this.

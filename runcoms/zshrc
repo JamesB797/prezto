@@ -43,12 +43,12 @@ std_aliases=$(echo "$aliasdoc" | jq '.aliases')
 
 aliaskeys=$(echo "$std_aliases" | jq 'keys' | jq '.[]')
 
-echo aliases:
+#echo aliases:
 echo "$aliaskeys" | while read -r key
 do
     key=$(echo $key | tr -d '[:space:]"')
     value=$(echo $std_aliases | jq .$key | tr -d "\'\"\n\r")
-    printf "%-4s %s\n" "$key" "$value"
+    #printf "%-4s %s\n" "$key" "$value"
     alias $key=$value
 done
 

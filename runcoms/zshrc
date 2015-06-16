@@ -18,48 +18,32 @@ fi
 
 #####################################
 # Read zsh configuration from couchdb
+config="$HOME/.local-config/zsh.ini"
 
-checkNotFound () {
-    [[ $(echo $* | jq .error) =~ not_found ]]
-}
-
-# config database location
-zc=http://127.0.0.1:5984/zshconfig
-
-# default aliases, configure others in futon
-read -d '' alias_doc <<EOF
-{"aliases": {"zc": "cd ~/zprezto/runcoms",
-             "ec": "cd ~/.emacs.d"}}
+# Ensure config file exists
+if [[ ! -a "$config" ]]; then
+    >"$config" <<EOF
+[aliases]
+zc=cd ~/zprezto/runcoms
+ec=cd ~/.emacs.d
 EOF
-
-# Ensure database is created
-checkNotFound $(curl -sS $zc) && curl -X PUT $zc
-
-# Ensure aliases document is created
-aliasdoc=$(curl -sS $zc/aliases)
-checkNotFound $aliasdoc && aliasdoc=$(curl -sS -X PUT $zc/aliases -d $alias_doc)
-
-std_aliases=$(echo "$aliasdoc" | jq '.aliases')
-
-aliaskeys=$(echo "$std_aliases" | jq 'keys' | jq '.[]')
-
-#echo aliases:
-echo "$aliaskeys" | while read -r key
-do
-    key=$(echo $key | tr -d '[:space:]"')
-    value=$(echo $std_aliases | jq .$key | tr -d "\'\"\n\r")
-    #printf "%-4s %s\n" "$key" "$value"
-    alias $key=$value
-done
-
-if [[ `uname` =~ MSYS_NT ]]; then
-    if [[ `whoami` =~ student ]]; then
-        alias ga='cd c:/Repos/Glass\ App'
-        function pcp {
-            scp $* 'host'
-        }
-    fi
 fi
+
+inaliases=false
+cat "$config" | while read -r line  # Can I do this without cat?
+do
+    # Alias lines in aliases section
+    if [[ "$inaliases" = true && "$line" =~ "=" ]]; then
+        alias "$line"
+    fi
+
+    # Ignore others
+    if [[ "$line" =~ "^\[aliases\]$" ]]; then
+        inaliases=true
+    elif [[ "$line" =~ "^\[.*\]$" ]]; then
+        inaliases=false
+    fi
+done
 
 ########################################
 # Ensure that the editor is set properly

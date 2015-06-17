@@ -18,14 +18,21 @@ fi
 
 #####################################
 # Read zsh configuration from couchdb
-config="$HOME/.local-config/zsh.ini"
+configdir="$HOME/.local-config"
+config="$configdir/zsh.ini"
+
+# Ensure config dir exists
+if [[ ! -d "$configdir" ]]; then
+    mkdir "$configdir"
+fi
 
 # Ensure config file exists
 if [[ ! -a "$config" ]]; then
     >"$config" <<EOF
 [aliases]
-zc=cd ~/zprezto/runcoms
+zc=cd ~/.zprezto/runcoms
 ec=cd ~/.emacs.d
+lc=$configdir
 EOF
 fi
 

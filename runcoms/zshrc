@@ -4,20 +4,19 @@
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
-#   James Brown <drightkayorent@gmail.com>
+#   James Brown <jamesb797@gmail.com>
 #
 
-# Source Prezto.
+
+###############
+# Source Prezto
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-##############################
-# Customize to your needs... #
-##############################
 
-#####################################
-# Read zsh configuration from couchdb
+#########################################
+# Read further configuration from zsh.ini
 configdir="$HOME/.local-config"
 config="$configdir/zsh.ini"
 
@@ -33,35 +32,46 @@ if [[ ! -a "$config" ]]; then
 zc=cd ~/.zprezto/runcoms
 ec=cd ~/.emacs.d
 lc=$configdir
+
+[PATH]
 EOF
 fi
 
 inaliases=false
-cat "$config" | while read -r line  # Can I do this without cat?
+inpathdef=false
+while read -r line  # Can I do this without cat?
 do
-    # Alias lines in aliases section
     if [[ "$inaliases" = true && "$line" =~ "=" ]]; then
         alias "$line"
+    elif [[ "$inpathdef" = true && "$line" =~ "=" ]]; then
+        export PATH=${line:2}:$PATH
     fi
 
-    # Ignore others
     if [[ "$line" =~ "^\[aliases\]$" ]]; then
         inaliases=true
+        inpathdef=false
+    elif [[ "$line" =~ "^\[PATH\]$" ]]; then
+        inpathdef=true
+        inaliases=false
     elif [[ "$line" =~ "^\[.*\]$" ]]; then
         inaliases=false
+        inpathdef=false
     fi
-done
+done <"$config"
+
 
 ########################################
 # Ensure that the editor is set properly
 export VISUAL=emacsclient
 export EDITOR=emacsclient
 
-# Should probably investigate why I can't use the 'function'
-# syntax for this.
-alias e=e
+
+##################
+# Define utilities
+alias e=e  # In Dropbox bin
 
 alias msysupdate='pacman --needed -S bash pacman msys2-runtime'
+
 function zupdate {
     setopt EXTENDED_GLOB
     for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
